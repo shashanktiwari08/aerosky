@@ -1,0 +1,569 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:rgba(201,168,76,0.15);
+  --green:#1B4D2E;--green-light:#2A6B42;
+  --black:#0D0D0D;--black2:#141414;--black3:#1C1C1C;--black4:#222;
+  --white:#FAF8F2;--wd:rgba(250,248,242,0.6);--wf:rgba(250,248,242,0.08);
+  --border:rgba(201,168,76,0.2);--borderl:rgba(201,168,76,0.35);
+  --red:#E24B4A;--green-ok:#1D9E75;--amber:#BA7517;
+}
+body{background:var(--black);color:var(--white);font-family:'Montserrat',sans-serif;font-weight:300;font-size:13px;line-height:1.5}
+button{cursor:pointer;font-family:'Montserrat',sans-serif;font-size:12px}
+input,select,textarea{font-family:'Montserrat',sans-serif;font-size:12px}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:200px 1fr;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--black2);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column}
+.sb-brand{padding:1.2rem 1rem;border-bottom:1px solid var(--border)}
+.sb-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--gold);letter-spacing:3px}
+.sb-tag{font-size:.5rem;letter-spacing:4px;color:var(--wd);text-transform:uppercase;margin-top:2px}
+.sb-admin{padding:.6rem 1rem;background:var(--gold-dim);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.sb-admin-dot{width:8px;height:8px;border-radius:50%;background:var(--green-ok);flex-shrink:0}
+.sb-admin-name{font-size:.6rem;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:500}
+.sb-nav{flex:1;padding:.8rem 0}
+.sb-section{font-size:.48rem;letter-spacing:4px;text-transform:uppercase;color:var(--wd);padding:.4rem 1rem .2rem}
+.sb-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem;cursor:pointer;transition:background .2s;border-left:2px solid transparent;color:var(--wd);font-size:.65rem;letter-spacing:.5px;width:100%;background:none;border-top:none;border-right:none;border-bottom:none;text-align:left}
+.sb-item:hover{background:var(--wf);color:var(--white)}
+.sb-item.active{background:var(--gold-dim);color:var(--gold);border-left-color:var(--gold)}
+.sb-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.5rem;padding:1px 5px;border-radius:8px;font-weight:500}
+.sb-logout{padding:.8rem 1rem;border-top:1px solid var(--border)}
+.sb-logout button{width:100%;background:transparent;border:1px solid var(--border);color:var(--wd);padding:.5rem;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;transition:all .3s}
+.sb-logout button:hover{border-color:var(--gold);color:var(--gold)}
+
+/* MAIN */
+.main{background:var(--black);overflow:hidden}
+.topbar{background:var(--black2);border-bottom:1px solid var(--border);padding:.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--white)}
+.topbar-title span{color:var(--gold);font-style:italic}
+.topbar-right{display:flex;align-items:center;gap:.8rem}
+.topbar-date{font-size:.58rem;color:var(--wd);letter-spacing:1px}
+.notif-btn{background:transparent;border:1px solid var(--border);color:var(--wd);padding:.35rem .7rem;font-size:.6rem;letter-spacing:1px;transition:all .2s}
+.notif-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.content{padding:1.5rem;display:none}
+.content.active{display:block}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.stat-card{background:var(--black2);border:1px solid var(--border);padding:1rem 1.1rem;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold)}
+.stat-label{font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--wd);margin-bottom:.4rem}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold);line-height:1}
+.stat-sub{font-size:.55rem;color:var(--wd);margin-top:.3rem}
+.stat-sub.up{color:var(--green-ok)}
+.stat-sub.pend{color:var(--amber)}
+
+/* SECTION HEADERS */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.sec-head h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:var(--white)}
+.sec-head h3 em{color:var(--gold);font-style:italic}
+.btn-gold{background:var(--gold);color:var(--black);border:none;padding:.4rem 1rem;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;transition:background .2s}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid var(--border);padding:.4rem .9rem;font-size:.58rem;letter-spacing:1px;text-transform:uppercase;transition:all .2s}
+.btn-outline:hover{border-color:var(--gold);background:var(--gold-dim)}
+.btn-red{background:transparent;color:var(--red);border:1px solid rgba(226,75,74,0.3);padding:.35rem .7rem;font-size:.55rem;letter-spacing:1px;transition:all .2s}
+.btn-red:hover{background:rgba(226,75,74,0.1)}
+.btn-sm{padding:.3rem .7rem;font-size:.55rem}
+
+/* TABLE */
+.tbl-wrap{border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead{background:var(--black3)}
+thead th{padding:.6rem .8rem;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--wd);text-align:left;font-weight:500;border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid rgba(201,168,76,0.08);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--wf)}
+tbody td{padding:.6rem .8rem;font-size:.65rem;color:var(--white);vertical-align:middle}
+.td-dim{color:var(--wd)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.5rem;letter-spacing:1px;text-transform:uppercase;font-weight:500}
+.badge-pend{background:rgba(186,117,23,0.2);color:#E8A830;border:1px solid rgba(186,117,23,0.3)}
+.badge-ok{background:rgba(29,158,117,0.2);color:#2DC99A;border:1px solid rgba(29,158,117,0.3)}
+.badge-new{background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--border)}
+.badge-reject{background:rgba(226,75,74,0.15);color:#F07070;border:1px solid rgba(226,75,74,0.3)}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--gold);font-weight:500;margin-right:6px;vertical-align:middle}
+
+/* CALENDAR */
+.cal-wrap{border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem}
+.cal-head{background:var(--black3);padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between}
+.cal-month{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold)}
+.cal-nav button{background:none;border:1px solid var(--border);color:var(--wd);padding:.2rem .6rem;font-size:.7rem;cursor:pointer;transition:all .2s}
+.cal-nav button:hover{border-color:var(--gold);color:var(--gold)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);background:var(--black2)}
+.cal-day-label{text-align:center;padding:.4rem;font-size:.5rem;letter-spacing:2px;text-transform:uppercase;color:var(--wd);border-bottom:1px solid var(--border)}
+.cal-cell{min-height:52px;padding:.35rem .4rem;border-right:1px solid rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.08);cursor:pointer;transition:background .15s;position:relative}
+.cal-cell:hover{background:var(--wf)}
+.cal-cell.other{opacity:.3}
+.cal-cell.today{background:var(--gold-dim)}
+.cal-cell.has-event{border-top:2px solid var(--gold)}
+.cal-num{font-size:.65rem;color:var(--wd);margin-bottom:2px}
+.cal-cell.today .cal-num{color:var(--gold);font-weight:500}
+.cal-evt{background:var(--green);border-left:2px solid var(--gold);padding:2px 4px;font-size:.48rem;color:var(--gold-light);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{margin-bottom:.9rem}
+.form-group label{display:block;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--wd);margin-bottom:.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--wf);border:1px solid var(--border);color:var(--white);padding:.55rem .8rem;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-group select option{background:var(--black2)}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+
+/* PANEL */
+.panel{background:var(--black2);border:1px solid var(--border);padding:1.2rem;margin-bottom:1.2rem}
+.panel-title{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem}
+
+/* TOAST */
+.toast{position:absolute;top:1rem;right:1rem;background:var(--green);border:1px solid rgba(201,168,76,0.4);color:var(--gold-light);padding:.7rem 1.2rem;font-size:.65rem;letter-spacing:.5px;display:none;z-index:100}
+.toast.show{display:block;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* PWD MODAL */
+.pwd-modal-bg{display:none;position:absolute;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;min-height:400px}
+.pwd-modal-bg.open{display:flex}
+.pwd-modal{background:var(--black2);border:1px solid var(--borderl);padding:1.5rem;width:320px}
+.pwd-modal h4{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--gold);margin-bottom:.4rem}
+.pwd-modal p{font-size:.6rem;color:var(--wd);margin-bottom:1rem}
+</style>
+
+<div class="shell" style="position:relative">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">Aero Sky</div>
+    <div class="sb-tag">Admin Panel</div>
+  </div>
+  <div class="sb-admin">
+    <div class="sb-admin-dot"></div>
+    <div class="sb-admin-name">Admin · Superuser</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <button class="sb-item active" onclick="showTab('overview',this)"><span class="sb-icon">◈</span> Dashboard</button>
+    <div class="sb-section">Manage</div>
+    <button class="sb-item" onclick="showTab('events',this)"><span class="sb-icon">◉</span> Events <span class="sb-badge">3</span></button>
+    <button class="sb-item" onclick="showTab('staff',this)"><span class="sb-icon">◎</span> Service Staff</button>
+    <button class="sb-item" onclick="showTab('applications',this)"><span class="sb-icon">✦</span> Applications <span class="sb-badge">4</span></button>
+    <button class="sb-item" onclick="showTab('clients',this)"><span class="sb-icon">◇</span> Clients</button>
+    <button class="sb-item" onclick="showTab('vendors',this)"><span class="sb-icon">⬡</span> Vendors</button>
+    <div class="sb-section">Finance</div>
+    <button class="sb-item" onclick="showTab('payments',this)"><span class="sb-icon">₹</span> Payments</button>
+    <div class="sb-section">Settings</div>
+    <button class="sb-item" onclick="showTab('passwords',this)"><span class="sb-icon">★</span> Passwords</button>
+  </div>
+  <div class="sb-logout"><button onclick="alert('Logged out.')">Logout</button></div>
+</div>
+
+<!-- MAIN -->
+<div class="main" style="position:relative">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard <span>Overview</span></div>
+    <div class="topbar-right">
+      <div class="topbar-date" id="topbar-date"></div>
+      <button class="notif-btn">Notifications (4)</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ── OVERVIEW ── -->
+  <div class="content active" id="tab-overview">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Total Events</div><div class="stat-val">38</div><div class="stat-sub up">+3 this month</div></div>
+      <div class="stat-card"><div class="stat-label">Active Staff</div><div class="stat-val">124</div><div class="stat-sub">On network</div></div>
+      <div class="stat-card"><div class="stat-label">Revenue (May)</div><div class="stat-val">₹4.2L</div><div class="stat-sub up">+18% vs Apr</div></div>
+      <div class="stat-card"><div class="stat-label">Pending Payments</div><div class="stat-val">₹68K</div><div class="stat-sub pend">3 staff pending</div></div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="sec-head"><h3>Upcoming <em>Events</em></h3><button class="btn-outline btn-sm" onclick="showTab('events',document.querySelector('[onclick*=events]'))">View All</button></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th style="width:35%">Event</th><th style="width:25%">Date</th><th style="width:22%">Venue</th><th style="width:18%">Status</th></tr></thead>
+            <tbody>
+              <tr><td>Sharma Wedding</td><td class="td-dim">May 10, 2026</td><td class="td-dim">Taj Hotel</td><td><span class="badge badge-ok">Confirmed</span></td></tr>
+              <tr><td>TechCorp Launch</td><td class="td-dim">May 14, 2026</td><td class="td-dim">Leela</td><td><span class="badge badge-pend">Pending</span></td></tr>
+              <tr><td>Gupta Reception</td><td class="td-dim">May 18, 2026</td><td class="td-dim">Oberoi</td><td><span class="badge badge-ok">Confirmed</span></td></tr>
+              <tr><td>Annual Gala</td><td class="td-dim">May 24, 2026</td><td class="td-dim">ITC Grand</td><td><span class="badge badge-pend">Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="sec-head"><h3>New <em>Applications</em></h3><button class="btn-outline btn-sm" onclick="showTab('applications',document.querySelector('[onclick*=applications]'))">View All</button></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th style="width:38%">Name</th><th style="width:28%">Role</th><th style="width:34%">Action</th></tr></thead>
+            <tbody>
+              <tr><td><span class="avatar">RK</span>Rahul K.</td><td class="td-dim">Waiter</td><td><button class="btn-gold btn-sm" onclick="approveApp(this,'Rahul K.')">Approve</button></td></tr>
+              <tr><td><span class="avatar">PS</span>Priya S.</td><td class="td-dim">Loader</td><td><button class="btn-gold btn-sm" onclick="approveApp(this,'Priya S.')">Approve</button></td></tr>
+              <tr><td><span class="avatar">AM</span>Amit M.</td><td class="td-dim">Dishwasher</td><td><button class="btn-gold btn-sm" onclick="approveApp(this,'Amit M.')">Approve</button></td></tr>
+              <tr><td><span class="avatar">SK</span>Sunita K.</td><td class="td-dim">Serving</td><td><button class="btn-gold btn-sm" onclick="approveApp(this,'Sunita K.')">Approve</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-head"><h3>Pending <em>Payments</em></h3></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:28%">Staff Name</th><th style="width:25%">Event</th><th style="width:18%">Amount</th><th style="width:15%">Status</th><th style="width:14%">Action</th></tr></thead>
+        <tbody>
+          <tr><td><span class="avatar">RK</span>Rahul Kumar</td><td class="td-dim">Sharma Wedding</td><td>₹1,200</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-gold btn-sm" onclick="markPaid(this)">Mark Paid</button></td></tr>
+          <tr><td><span class="avatar">PS</span>Priya Singh</td><td class="td-dim">TechCorp Launch</td><td>₹900</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-gold btn-sm" onclick="markPaid(this)">Mark Paid</button></td></tr>
+          <tr><td><span class="avatar">AM</span>Amit Mehta</td><td class="td-dim">Gupta Reception</td><td>₹800</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-gold btn-sm" onclick="markPaid(this)">Mark Paid</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── EVENTS ── -->
+  <div class="content" id="tab-events">
+    <div class="sec-head">
+      <h3>Manage <em>Events</em></h3>
+      <button class="btn-gold" onclick="togglePanel('new-event-panel')">+ Schedule Event</button>
+    </div>
+
+    <div class="panel" id="new-event-panel" style="display:none">
+      <div class="panel-title">Schedule New Event</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Event Name *</label><input type="text" id="ev-name" placeholder="e.g. Sharma Wedding"></div>
+        <div class="form-group"><label>Client Name *</label><input type="text" id="ev-client" placeholder="Client full name"></div>
+        <div class="form-group"><label>Event Date *</label><input type="date" id="ev-date"></div>
+        <div class="form-group"><label>Venue *</label><input type="text" id="ev-venue" placeholder="Venue name & city"></div>
+        <div class="form-group"><label>Event Type</label>
+          <select id="ev-type"><option>Wedding</option><option>Corporate</option><option>Reception</option><option>Birthday</option><option>Other</option></select>
+        </div>
+        <div class="form-group"><label>Site Manager</label><input type="text" id="ev-manager" placeholder="Assigned site manager"></div>
+      </div>
+      <div class="form-group"><label>Assign Service Staff (comma separated)</label><input type="text" id="ev-staff" placeholder="e.g. Rahul Kumar, Priya Singh, Amit Mehta"></div>
+      <div class="form-group"><label>Notes</label><textarea id="ev-notes" placeholder="Any special instructions..."></textarea></div>
+      <div style="display:flex;gap:.8rem">
+        <button class="btn-gold" onclick="createEvent()">Create Event</button>
+        <button class="btn-outline" onclick="togglePanel('new-event-panel')">Cancel</button>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:22%">Event</th><th style="width:15%">Client</th><th style="width:13%">Date</th><th style="width:18%">Venue</th><th style="width:12%">Type</th><th style="width:10%">Status</th><th style="width:10%">Action</th></tr></thead>
+        <tbody id="events-tbody">
+          <tr><td>Sharma Wedding</td><td class="td-dim">R. Sharma</td><td class="td-dim">10 May 26</td><td class="td-dim">Taj Hotel, Delhi</td><td class="td-dim">Wedding</td><td><span class="badge badge-ok">Confirmed</span></td><td><button class="btn-outline btn-sm">View</button></td></tr>
+          <tr><td>TechCorp Launch</td><td class="td-dim">TechCorp Ltd</td><td class="td-dim">14 May 26</td><td class="td-dim">Leela, Gurgaon</td><td class="td-dim">Corporate</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-outline btn-sm">View</button></td></tr>
+          <tr><td>Gupta Reception</td><td class="td-dim">V. Gupta</td><td class="td-dim">18 May 26</td><td class="td-dim">Oberoi, Delhi</td><td class="td-dim">Reception</td><td><span class="badge badge-ok">Confirmed</span></td><td><button class="btn-outline btn-sm">View</button></td></tr>
+          <tr><td>Annual Gala</td><td class="td-dim">Corp Events</td><td class="td-dim">24 May 26</td><td class="td-dim">ITC Grand</td><td class="td-dim">Corporate</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-outline btn-sm">View</button></td></tr>
+          <tr><td>Verma Birthday</td><td class="td-dim">K. Verma</td><td class="td-dim">28 May 26</td><td class="td-dim">Radisson Blu</td><td class="td-dim">Birthday</td><td><span class="badge badge-ok">Confirmed</span></td><td><button class="btn-outline btn-sm">View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec-head" style="margin-top:1.5rem"><h3>Event <em>Calendar</em></h3></div>
+    <div class="cal-wrap">
+      <div class="cal-head">
+        <div class="cal-nav"><button onclick="prevMonth()">&#8249;</button></div>
+        <div class="cal-month" id="cal-month-label">May 2026</div>
+        <div class="cal-nav"><button onclick="nextMonth()">&#8250;</button></div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── STAFF ── -->
+  <div class="content" id="tab-staff">
+    <div class="sec-head">
+      <h3>Service <em>Staff</em></h3>
+      <div style="display:flex;gap:.6rem">
+        <select style="background:var(--black3);border:1px solid var(--border);color:var(--wd);padding:.35rem .7rem;font-size:.6rem" onchange="filterStaff(this.value)">
+          <option value="">All Roles</option>
+          <option>Waiter</option><option>Loader</option><option>Dishwasher</option><option>Serving Staff</option>
+        </select>
+        <button class="btn-outline btn-sm" onclick="showTab('passwords',document.querySelector('[onclick*=passwords]'))">Update Passwords</button>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:22%">Name</th><th style="width:14%">Role</th><th style="width:16%">WhatsApp</th><th style="width:12%">Events Done</th><th style="width:14%">Payment Status</th><th style="width:10%">Status</th><th style="width:12%">Action</th></tr></thead>
+        <tbody id="staff-tbody">
+          <tr><td><span class="avatar">RK</span>Rahul Kumar</td><td class="td-dim">Waiter</td><td class="td-dim">98101XXXXX</td><td style="text-align:center">12</td><td><span class="badge badge-ok">Cleared</span></td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Rahul Kumar')">Pwd</button></td></tr>
+          <tr><td><span class="avatar">PS</span>Priya Singh</td><td class="td-dim">Loader</td><td class="td-dim">98202XXXXX</td><td style="text-align:center">8</td><td><span class="badge badge-pend">Pending</span></td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Priya Singh')">Pwd</button></td></tr>
+          <tr><td><span class="avatar">AM</span>Amit Mehta</td><td class="td-dim">Dishwasher</td><td class="td-dim">99303XXXXX</td><td style="text-align:center">5</td><td><span class="badge badge-pend">Pending</span></td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Amit Mehta')">Pwd</button></td></tr>
+          <tr><td><span class="avatar">SK</span>Sunita Kaur</td><td class="td-dim">Serving Staff</td><td class="td-dim">97404XXXXX</td><td style="text-align:center">19</td><td><span class="badge badge-ok">Cleared</span></td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Sunita Kaur')">Pwd</button></td></tr>
+          <tr><td><span class="avatar">MV</span>Manoj Verma</td><td class="td-dim">Waiter</td><td class="td-dim">96505XXXXX</td><td style="text-align:center">3</td><td><span class="badge badge-ok">Cleared</span></td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Manoj Verma')">Pwd</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec-head"><h3>Assign Staff to <em>Event</em></h3></div>
+    <div class="panel">
+      <div class="panel-title">Quick Assignment</div>
+      <div class="form-row">
+        <div class="form-group"><label>Select Event</label>
+          <select><option>Sharma Wedding — May 10</option><option>TechCorp Launch — May 14</option><option>Gupta Reception — May 18</option><option>Annual Gala — May 24</option></select>
+        </div>
+        <div class="form-group"><label>Select Staff Member</label>
+          <select><option>Rahul Kumar (Waiter)</option><option>Priya Singh (Loader)</option><option>Amit Mehta (Dishwasher)</option><option>Sunita Kaur (Serving)</option><option>Manoj Verma (Waiter)</option></select>
+        </div>
+      </div>
+      <button class="btn-gold" onclick="showToast('Staff assigned successfully! They will see this event in their dashboard.')">Assign Staff</button>
+    </div>
+  </div>
+
+  <!-- ── APPLICATIONS ── -->
+  <div class="content" id="tab-applications">
+    <div class="sec-head"><h3>Pending <em>Applications</em></h3></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:22%">Name</th><th style="width:14%">Role</th><th style="width:16%">Phone</th><th style="width:16%">WhatsApp</th><th style="width:10%">Age</th><th style="width:10%">Resume</th><th style="width:12%">Action</th></tr></thead>
+        <tbody id="app-tbody">
+          <tr><td><span class="avatar">RK</span>Rahul Kumar</td><td class="td-dim">Waiter</td><td class="td-dim">98101XXXXX</td><td class="td-dim">98101XXXXX</td><td class="td-dim">24</td><td><button class="btn-outline btn-sm">View</button></td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn-gold btn-sm" onclick="approveApp(this,'Rahul Kumar')">Approve</button><button class="btn-red" onclick="rejectApp(this)">Reject</button></td></tr>
+          <tr><td><span class="avatar">PS</span>Priya Singh</td><td class="td-dim">Loader</td><td class="td-dim">98202XXXXX</td><td class="td-dim">98202XXXXX</td><td class="td-dim">27</td><td><button class="btn-outline btn-sm">View</button></td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn-gold btn-sm" onclick="approveApp(this,'Priya Singh')">Approve</button><button class="btn-red" onclick="rejectApp(this)">Reject</button></td></tr>
+          <tr><td><span class="avatar">AM</span>Amit Mehta</td><td class="td-dim">Dishwasher</td><td class="td-dim">99303XXXXX</td><td class="td-dim">99303XXXXX</td><td class="td-dim">21</td><td><button class="btn-outline btn-sm">View</button></td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn-gold btn-sm" onclick="approveApp(this,'Amit Mehta')">Approve</button><button class="btn-red" onclick="rejectApp(this)">Reject</button></td></tr>
+          <tr><td><span class="avatar">SK</span>Sunita Kaur</td><td class="td-dim">Serving Staff</td><td class="td-dim">97404XXXXX</td><td class="td-dim">97404XXXXX</td><td class="td-dim">29</td><td><button class="btn-outline btn-sm">View</button></td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn-gold btn-sm" onclick="approveApp(this,'Sunita Kaur')">Approve</button><button class="btn-red" onclick="rejectApp(this)">Reject</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── CLIENTS ── -->
+  <div class="content" id="tab-clients">
+    <div class="sec-head"><h3>Client <em>Accounts</em></h3><button class="btn-gold" onclick="showToast('Client added successfully!')">+ Add Client</button></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:25%">Client Name</th><th style="width:20%">Phone</th><th style="width:20%">Event</th><th style="width:15%">Date</th><th style="width:10%">Status</th><th style="width:10%">Pwd</th></tr></thead>
+        <tbody>
+          <tr><td><span class="avatar">RS</span>R. Sharma</td><td class="td-dim">98700XXXXX</td><td class="td-dim">Sharma Wedding</td><td class="td-dim">10 May 26</td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('R. Sharma')">Update</button></td></tr>
+          <tr><td><span class="avatar">TC</span>TechCorp Ltd</td><td class="td-dim">98800XXXXX</td><td class="td-dim">TechCorp Launch</td><td class="td-dim">14 May 26</td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('TechCorp Ltd')">Update</button></td></tr>
+          <tr><td><span class="avatar">VG</span>V. Gupta</td><td class="td-dim">98900XXXXX</td><td class="td-dim">Gupta Reception</td><td class="td-dim">18 May 26</td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('V. Gupta')">Update</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── VENDORS ── -->
+  <div class="content" id="tab-vendors">
+    <div class="sec-head"><h3>Vendor <em>Partners</em></h3><button class="btn-gold" onclick="showToast('Vendor added!')">+ Add Vendor</button></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:25%">Vendor</th><th style="width:20%">Category</th><th style="width:20%">Phone</th><th style="width:15%">Events</th><th style="width:10%">Status</th><th style="width:10%">Pwd</th></tr></thead>
+        <tbody>
+          <tr><td><span class="avatar">FV</span>Fresh Vendors</td><td class="td-dim">Catering Supply</td><td class="td-dim">98001XXXXX</td><td style="text-align:center">14</td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Fresh Vendors')">Update</button></td></tr>
+          <tr><td><span class="avatar">DW</span>Decor World</td><td class="td-dim">Decor & Flowers</td><td class="td-dim">98002XXXXX</td><td style="text-align:center">9</td><td><span class="badge badge-ok">Active</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Decor World')">Update</button></td></tr>
+          <tr><td><span class="avatar">SE</span>Sound Events</td><td class="td-dim">AV & Sound</td><td class="td-dim">98003XXXXX</td><td style="text-align:center">6</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-outline btn-sm" onclick="openPwdModal('Sound Events')">Update</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PAYMENTS ── -->
+  <div class="content" id="tab-payments">
+    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card"><div class="stat-label">Total Paid (May)</div><div class="stat-val">₹3.5L</div><div class="stat-sub up">On time</div></div>
+      <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val">₹68K</div><div class="stat-sub pend">3 staff</div></div>
+      <div class="stat-card"><div class="stat-label">Next Payout</div><div class="stat-val">May 12</div><div class="stat-sub">Post event</div></div>
+    </div>
+    <div class="sec-head"><h3>Payment <em>Tracker</em></h3></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:22%">Staff</th><th style="width:20%">Event</th><th style="width:14%">Date</th><th style="width:13%">Amount</th><th style="width:13%">Status</th><th style="width:18%">Action</th></tr></thead>
+        <tbody id="pay-tbody">
+          <tr><td><span class="avatar">RK</span>Rahul Kumar</td><td class="td-dim">Sharma Wedding</td><td class="td-dim">10 May</td><td>₹1,200</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-gold btn-sm" onclick="markPaid(this)">Mark Paid</button></td></tr>
+          <tr><td><span class="avatar">PS</span>Priya Singh</td><td class="td-dim">TechCorp Launch</td><td class="td-dim">14 May</td><td>₹900</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-gold btn-sm" onclick="markPaid(this)">Mark Paid</button></td></tr>
+          <tr><td><span class="avatar">AM</span>Amit Mehta</td><td class="td-dim">Gupta Reception</td><td class="td-dim">18 May</td><td>₹800</td><td><span class="badge badge-pend">Pending</span></td><td><button class="btn-gold btn-sm" onclick="markPaid(this)">Mark Paid</button></td></tr>
+          <tr><td><span class="avatar">SK</span>Sunita Kaur</td><td class="td-dim">Verma Birthday</td><td class="td-dim">28 Apr</td><td>₹1,500</td><td><span class="badge badge-ok">Paid</span></td><td><span style="font-size:.58rem;color:var(--wd)">Done</span></td></tr>
+          <tr><td><span class="avatar">MV</span>Manoj Verma</td><td class="td-dim">Annual Gala</td><td class="td-dim">24 May</td><td>₹1,000</td><td><span class="badge badge-ok">Paid</span></td><td><span style="font-size:.58rem;color:var(--wd)">Done</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PASSWORDS ── -->
+  <div class="content" id="tab-passwords">
+    <div class="sec-head"><h3>Password <em>Management</em></h3></div>
+    <div class="panel">
+      <div class="panel-title">Update User Password</div>
+      <div class="form-row">
+        <div class="form-group"><label>User Type</label>
+          <select id="pwd-type"><option>Service Staff</option><option>Client</option><option>Vendor</option><option>Admin</option></select>
+        </div>
+        <div class="form-group"><label>Select User</label>
+          <select id="pwd-user"><option>Rahul Kumar</option><option>Priya Singh</option><option>Amit Mehta</option><option>Sunita Kaur</option><option>R. Sharma</option><option>TechCorp Ltd</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>New Password *</label><input type="password" id="pwd-new" placeholder="Enter new password"></div>
+        <div class="form-group"><label>Confirm Password *</label><input type="password" id="pwd-confirm" placeholder="Confirm password"></div>
+      </div>
+      <button class="btn-gold" onclick="updatePassword()">Update Password &amp; Notify via WhatsApp</button>
+    </div>
+
+    <div class="sec-head" style="margin-top:1.5rem"><h3>Recent Password <em>Updates</em></h3></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:28%">User</th><th style="width:18%">Type</th><th style="width:22%">Updated On</th><th style="width:32%">Notified Via</th></tr></thead>
+        <tbody id="pwd-log">
+          <tr><td><span class="avatar">SK</span>Sunita Kaur</td><td class="td-dim">Staff</td><td class="td-dim">01 May 2026</td><td class="td-dim">WhatsApp ✓</td></tr>
+          <tr><td><span class="avatar">TC</span>TechCorp Ltd</td><td class="td-dim">Client</td><td class="td-dim">28 Apr 2026</td><td class="td-dim">WhatsApp ✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- PASSWORD MODAL -->
+<div class="pwd-modal-bg" id="pwd-modal-bg">
+  <div class="pwd-modal">
+    <h4>Update Password</h4>
+    <p id="pwd-modal-user">For: Rahul Kumar</p>
+    <div class="form-group"><label>New Password</label><input type="password" id="pm-new" placeholder="New password"></div>
+    <div class="form-group"><label>Confirm Password</label><input type="password" id="pm-confirm" placeholder="Confirm password"></div>
+    <div style="display:flex;gap:.8rem;margin-top:.5rem">
+      <button class="btn-gold" onclick="savePwd()" style="flex:1">Save & Notify WhatsApp</button>
+      <button class="btn-outline" onclick="closePwdModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /shell -->
+
+<script>
+const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let calYear=2026,calMonth=4;
+
+const events=[
+  {day:10,label:'Sharma Wedding'},{day:14,label:'TechCorp Launch'},
+  {day:18,label:'Gupta Reception'},{day:24,label:'Annual Gala'},{day:28,label:'Verma Birthday'}
+];
+
+function renderCal(){
+  const g=document.getElementById('cal-grid');
+  document.getElementById('cal-month-label').textContent=months[calMonth]+' '+calYear;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let h=days.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
+  const first=new Date(calYear,calMonth,1).getDay();
+  const total=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  for(let i=0;i<first;i++)h+=`<div class="cal-cell other"></div>`;
+  for(let d=1;d<=total;d++){
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const evts=events.filter(e=>e.day===d);
+    const hasCls=evts.length?'has-event':'';
+    let evtHtml=evts.map(e=>`<div class="cal-evt">${e.label}</div>`).join('');
+    h+=`<div class="cal-cell ${isToday?'today':''} ${hasCls}"><div class="cal-num">${d}</div>${evtHtml}</div>`;
+  }
+  g.innerHTML=h;
+}
+
+function prevMonth(){if(calMonth===0){calMonth=11;calYear--}else calMonth--;renderCal()}
+function nextMonth(){if(calMonth===11){calMonth=0;calYear++}else calMonth++;renderCal()}
+
+function showTab(id,el){
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  const titles={overview:'Dashboard Overview',events:'Events & Calendar',staff:'Service Staff',applications:'Applications',clients:'Clients',vendors:'Vendors',payments:'Payments',passwords:'Password Management'};
+  const emParts={overview:'Overview',events:'Calendar',staff:'Staff',applications:'Applications',clients:'Clients',vendors:'Vendors',payments:'Payments',passwords:'Management'};
+  const plainPart=titles[id].replace(emParts[id],'').trim();
+  document.getElementById('topbar-title').innerHTML=plainPart+' <span>'+emParts[id]+'</span>';
+  if(id==='events')setTimeout(renderCal,50);
+}
+
+function togglePanel(id){
+  const p=document.getElementById(id);
+  p.style.display=p.style.display==='none'?'block':'none';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function approveApp(btn,name){
+  const row=btn.closest('tr');
+  row.querySelector('td:last-child').innerHTML='<span class="badge badge-ok">Approved</span>';
+  showToast(name+' approved! Login credentials sent via WhatsApp.');
+}
+
+function rejectApp(btn){
+  const row=btn.closest('tr');
+  row.querySelector('td:last-child').innerHTML='<span class="badge badge-reject">Rejected</span>';
+  showToast('Application rejected.');
+}
+
+function markPaid(btn){
+  const row=btn.closest('tr');
+  row.querySelectorAll('td')[4].innerHTML='<span class="badge badge-ok">Paid</span>';
+  btn.closest('td').innerHTML='<span style="font-size:.58rem;color:var(--wd)">Done</span>';
+  showToast('Payment marked as paid!');
+}
+
+function createEvent(){
+  const name=document.getElementById('ev-name').value.trim();
+  const client=document.getElementById('ev-client').value.trim();
+  const date=document.getElementById('ev-date').value;
+  const venue=document.getElementById('ev-venue').value.trim();
+  const type=document.getElementById('ev-type').value;
+  if(!name||!client||!date||!venue){alert('Please fill in all required fields.');return;}
+  const d=new Date(date);
+  const formatted=d.getDate()+' '+(months[d.getMonth()]||'').slice(0,3)+' '+String(d.getFullYear()).slice(2);
+  const tbody=document.getElementById('events-tbody');
+  const row=document.createElement('tr');
+  row.innerHTML=`<td>${name}</td><td class="td-dim">${client}</td><td class="td-dim">${formatted}</td><td class="td-dim">${venue}</td><td class="td-dim">${type}</td><td><span class="badge badge-new">New</span></td><td><button class="btn-outline btn-sm">View</button></td>`;
+  tbody.appendChild(row);
+  togglePanel('new-event-panel');
+  showToast('Event "'+name+'" scheduled! Visible in staff & client dashboards.');
+  ['ev-name','ev-client','ev-date','ev-venue','ev-staff','ev-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+
+function updatePassword(){
+  const np=document.getElementById('pwd-new').value;
+  const cp=document.getElementById('pwd-confirm').value;
+  const user=document.getElementById('pwd-user').value;
+  const type=document.getElementById('pwd-type').value;
+  if(!np||!cp){alert('Please enter both password fields.');return;}
+  if(np!==cp){alert('Passwords do not match.');return;}
+  const tbody=document.getElementById('pwd-log');
+  const now=new Date();
+  const formatted=now.getDate()+' '+(months[now.getMonth()]||'').slice(0,3)+' '+now.getFullYear();
+  const initials=user.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const row=document.createElement('tr');
+  row.innerHTML=`<td><span class="avatar">${initials}</span>${user}</td><td class="td-dim">${type}</td><td class="td-dim">${formatted}</td><td class="td-dim">WhatsApp ✓</td>`;
+  tbody.insertBefore(row,tbody.firstChild);
+  document.getElementById('pwd-new').value='';
+  document.getElementById('pwd-confirm').value='';
+  showToast('Password updated for '+user+' & sent via WhatsApp!');
+}
+
+function openPwdModal(name){
+  document.getElementById('pwd-modal-user').textContent='For: '+name;
+  document.getElementById('pm-new').value='';
+  document.getElementById('pm-confirm').value='';
+  document.getElementById('pwd-modal-bg').classList.add('open');
+}
+function closePwdModal(){document.getElementById('pwd-modal-bg').classList.remove('open')}
+function savePwd(){
+  const np=document.getElementById('pm-new').value;
+  const cp=document.getElementById('pm-confirm').value;
+  if(!np||!cp){alert('Please fill both fields.');return;}
+  if(np!==cp){alert('Passwords do not match.');return;}
+  closePwdModal();
+  showToast('Password updated & sent via WhatsApp!');
+}
+
+document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+</script>
