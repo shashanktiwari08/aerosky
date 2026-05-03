@@ -13,7 +13,7 @@ const Apply = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch('http://localhost:5000/api/applications', {
+      await fetch('https://aerosky-p80o.onrender.com/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

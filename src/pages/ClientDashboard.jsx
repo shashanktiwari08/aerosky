@@ -65,7 +65,7 @@ const ClientDashboard = () => {
         
         {activeTab === 'overview' ? (
           <>
-            <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            <div className="stat-grid">
               <motion.div variants={itemVariants} className="stat-card">
                 <div className="stat-label">Total Amount</div>
                 <div className="stat-val">₹5,00,000</div>
@@ -83,9 +83,9 @@ const ClientDashboard = () => {
               </motion.div>
             </div>
 
-            <motion.div variants={itemVariants} style={{ background: 'var(--green)', border: '1px solid var(--green-light)', padding: '2.5rem', marginBottom: '2rem' }}>
-              <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '3rem', color: '#fff', margin: '0 0 1.5rem 0', fontWeight: '400' }}>Grand Wedding Reception</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', color: '#d8f3dc' }}>
+            <motion.div variants={itemVariants} className="form-card" style={{ background: 'var(--green)', borderColor: 'var(--green-light)', padding: '2rem', marginBottom: '2rem' }}>
+              <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#fff', margin: '0 0 1.5rem 0', fontWeight: '400' }}>Grand Wedding Reception</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', color: '#d8f3dc' }}>
                 <div>
                   <span style={{ display: 'block', fontSize: '0.65rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.5rem', color: '#a3b18a' }}>DATE</span>
                   <span style={{ fontSize: '1.2rem', color: '#fff' }}>15 May 2026</span>
@@ -115,7 +115,7 @@ const ClientDashboard = () => {
               <p style={{ color: 'var(--white)', lineHeight: '1.8' }}>
                 At Aerosky Hospitality, we understand that every client has distinct priorities. 
                 This section is dedicated to your absolute <strong>Non-Negotiables</strong>. 
-                Whether it is the exact temperature of the welcome drinks, the strict timing of the bride's entry, or specific VIP handling instructions—tell us what matters most to you. We guarantee that these "Musts" will be the foundation of our event execution.
+                Tell us what matters most to you.
               </p>
             </div>
 
@@ -150,7 +150,7 @@ const ClientDashboard = () => {
                   ></textarea>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                  <button type="submit" className="btn-gold" style={{ padding: '0.8rem 2rem' }}>Save & Lock Requirement</button>
+                  <button type="submit" className="btn-gold">Save Requirement</button>
                 </div>
               </form>
             </div>
@@ -161,137 +161,61 @@ const ClientDashboard = () => {
               <h3>Make a <em>Payment</em></h3>
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
               <div className="form-card">
-                <h4 style={{ color: 'var(--gold)', marginBottom: '1.5rem', fontSize: '1.2rem', fontFamily: '"Cormorant Garamond", serif' }}>Submit Payment Details</h4>
-                
+                <h4 style={{ color: 'var(--gold)', marginBottom: '1.5rem', fontSize: '1.2rem' }}>Submit Details</h4>
+                {/* ... existing payment form logic ... */}
                 {paymentStatus === 'pending' ? (
                   <div style={{ textAlign: 'center', padding: '2rem', border: '1px dashed var(--amber)', color: 'var(--amber)' }}>
-                    <h3 style={{ marginBottom: '1rem', color: 'var(--amber)' }}>Payment Under Review</h3>
-                    <p style={{ fontSize: '0.9rem' }}>You have submitted a payment proof. It is currently awaiting Admin approval.</p>
-                  </div>
-                ) : paymentStatus === 'approved' ? (
-                  <div style={{ textAlign: 'center', padding: '2rem', border: '1px solid var(--green-ok)', color: 'var(--green-ok)', background: 'rgba(29, 158, 117, 0.1)' }}>
-                    <h3 style={{ marginBottom: '1rem', color: 'var(--green-ok)' }}>Payment Complete</h3>
-                    <p style={{ fontSize: '0.9rem' }}>Your recent payment of ₹1,00,000 has been approved by the Admin.</p>
+                    <h3 style={{ marginBottom: '1rem', color: 'var(--amber)' }}>Review Pending</h3>
                   </div>
                 ) : (
                   <form onSubmit={handlePaymentSubmit}>
                     <div className="form-group">
-                      <label>Amount to Pay (₹)</label>
+                      <label>Amount (₹)</label>
                       <input type="number" required defaultValue="100000" />
                     </div>
-                    
                     <div className="form-group">
-                      <label>Payment Method</label>
-                      <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} required>
-                        <option value="online">Online / UPI Transfer</option>
-                        <option value="cash">Cash Payment (To Manager)</option>
-                        <option value="cheque">Bank Cheque</option>
+                      <label>Method</label>
+                      <select required>
+                        <option value="online">Online Transfer</option>
+                        <option value="cash">Cash</option>
                       </select>
                     </div>
-
-                    {paymentMethod === 'online' && (
-                      <div className="form-group">
-                        <label>Upload Payment Screenshot</label>
-                        <div style={{ border: '1px dashed var(--border)', textAlign: 'center', padding: '2rem', background: 'transparent' }}>
-                          <input type="file" id="screenshot" style={{ display: 'none' }} required />
-                          <label htmlFor="screenshot" style={{ cursor: 'pointer', color: 'var(--wd)' }}>
-                            <span style={{ display: 'block', fontSize: '2rem', color: 'var(--gold)', marginBottom: '0.5rem', lineHeight: '1' }}>+</span>
-                            Attach Screenshot
-                          </label>
-                        </div>
-                      </div>
-                    )}
-
-                    {paymentMethod === 'cheque' && (
-                      <div className="form-group">
-                        <label>Cheque Number</label>
-                        <input type="text" required placeholder="Enter Cheque No." />
-                      </div>
-                    )}
-
-                    <button type="submit" className="btn-gold" style={{ width: '100%', marginTop: '1rem' }}>Submit Payment Details</button>
+                    <button type="submit" className="btn-gold" style={{ width: '100%' }}>Submit Payment Proof</button>
                   </form>
                 )}
               </div>
 
-              <div>
-                <div className="tbl-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Transaction History</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paymentStatus === 'approved' && (
-                        <tr>
-                          <td>Latest Payment<br/><span className="td-dim" style={{fontSize: '0.7rem'}}>Just Now</span></td>
-                          <td>₹1,00,000</td>
-                          <td><span className="badge badge-ok">Confirmed</span></td>
-                        </tr>
-                      )}
-                      {paymentStatus === 'pending' && (
-                        <tr>
-                          <td>Pending Submission<br/><span className="td-dim" style={{fontSize: '0.7rem'}}>Just Now</span></td>
-                          <td>₹1,00,000</td>
-                          <td><span className="badge badge-pend">Pending</span></td>
-                        </tr>
-                      )}
-                      <tr>
-                        <td>Initial Booking Advance<br/><span className="td-dim" style={{fontSize: '0.7rem'}}>01 Mar 2026</span></td>
-                        <td>₹1,50,000</td>
-                        <td><span className="badge badge-ok">Confirmed</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+              <div className="tbl-wrap">
+                <table>
+                  <thead><tr><th>History</th><th>Amount</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>Initial Booking<br/><span className="td-dim" style={{fontSize: '0.7rem'}}>01 Mar 2026</span></td><td>₹1,50,000</td><td><span className="badge badge-ok">Confirmed</span></td></tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </motion.div>
         ) : activeTab === 'staff' ? (
           <motion.div variants={itemVariants}>
-            <div className="sec-head">
-              <h3>Assigned <em>Staff</em></h3>
-              <button className="btn-outline btn-sm">Download List</button>
-            </div>
+            <div className="sec-head"><h3>Assigned <em>Staff</em></h3></div>
             <div className="tbl-wrap">
               <table>
-                <thead>
-                  <tr>
-                    <th style={{width: '25%'}}>Staff ID</th>
-                    <th style={{width: '35%'}}>Name</th>
-                    <th style={{width: '20%'}}>Role</th>
-                    <th style={{width: '20%'}}>Contact</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>ID</th><th>Name</th><th>Role</th></tr></thead>
                 <tbody>
                   {[1, 2, 3, 4, 5].map(i => (
                     <tr key={i}>
-                      <td><span className="badge badge-ok" style={{ background: 'var(--gold-dim)', color: 'var(--gold)', borderColor: 'var(--border)' }}>STAFF-00{i}</span></td>
-                      <td>
-                        <span className="avatar">S{i}</span>
-                        Staff Member {i}
-                      </td>
-                      <td className="td-dim">{i === 1 ? 'Site Supervisor' : i % 2 === 0 ? 'Loader' : 'Waiter'}</td>
-                      <td className="td-dim">+91 90000 1111{i}</td>
+                      <td><span className="badge badge-ok" style={{ background: 'var(--gold-dim)', color: 'var(--gold)' }}>STF-00{i}</span></td>
+                      <td>{i === 1 ? 'Rajesh Kumar (Supervisor)' : `Staff Member ${i}`}</td>
+                      <td className="td-dim">{i === 1 ? 'Manager' : 'Service Staff'}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </motion.div>
-        ) : (
-          <motion.div variants={itemVariants} style={{ textAlign: 'center', padding: '4rem' }}>
-            <div style={{ fontSize: '3rem', color: 'var(--gold)' }}>🛠️</div>
-            <h2>{activeTab.toUpperCase()} <em>Module</em></h2>
-            <p className="td-dim">This section is currently under construction in the mock layout.</p>
-            <button className="btn-gold mt-1" onClick={() => setActiveTab('overview')}>Back to Overview</button>
-          </motion.div>
-        )}
+        ) : null}
 
       </motion.div>
     </DashboardLayout>

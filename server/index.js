@@ -54,6 +54,18 @@ const StaffSchema = new mongoose.Schema({
 });
 const Staff = mongoose.model('Staff', StaffSchema);
 
+const EventSchema = new mongoose.Schema({
+  name: String,
+  client: String,
+  date: String,
+  venue: String,
+  manager: String,
+  staffCount: { type: Number, default: 0 },
+  status: { type: String, default: 'Upcoming' },
+  createdAt: { type: Date, default: Date.now }
+});
+const Event = mongoose.model('Event', EventSchema);
+
 // --- ROUTES ---
 
 // Applications
@@ -101,6 +113,23 @@ app.put('/api/staff/:id', async (req, res) => {
   res.json(updatedStaff);
 });
 
+// Events
+app.get('/api/events', async (req, res) => {
+  const events = await Event.find();
+  res.json(events);
+});
+
+app.post('/api/events', async (req, res) => {
+  const newEvent = new Event(req.body);
+  await newEvent.save();
+  res.json(newEvent);
+});
+
+app.put('/api/events/:id', async (req, res) => {
+  const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updatedEvent);
+});
+
 // --- SEED DATA FUNCTION ---
 const seedData = async () => {
   try {
@@ -125,6 +154,14 @@ const seedData = async () => {
       await Staff.create([
         { name: 'Amit Mehta', role: 'Loader', paid: 1000, balance: 800 },
         { name: 'Karan J.', role: 'Waiter', paid: 500, balance: 1200 }
+      ]);
+    }
+
+    const eventCount = await Event.countDocuments();
+    if (eventCount === 0) {
+      await Event.create([
+        { name: 'Grand Wedding', client: 'Rahul Sharma', date: '2026-06-15', venue: 'The Leela, Delhi', manager: 'Amit M.', status: 'Upcoming' },
+        { name: 'Corporate Gala', client: 'TechCorp', date: '2026-07-02', venue: 'ITC Maurya', manager: 'Karan J.', status: 'Upcoming' }
       ]);
     }
     console.log('Database seeded with initial records.');
