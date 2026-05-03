@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const DashboardLayout = ({ role, userName, userRole, activeTab, onTabChange, children }) => {
   const navigate = useNavigate();
@@ -24,25 +23,17 @@ const DashboardLayout = ({ role, userName, userRole, activeTab, onTabChange, chi
   ];
 
   const SidebarContent = () => (
-    <>
-      <div className="sb-brand" style={{ padding: '2rem 1.5rem' }}>
-        <div style={{ 
-          color: 'var(--gold)', 
-          fontSize: '1.2rem', 
-          fontWeight: '700', 
-          letterSpacing: '4px',
-          textTransform: 'uppercase',
-          fontFamily: '"Cormorant Garamond", serif',
-          lineHeight: '1.2'
-        }}>
+    <div className="sidebar-inner">
+      <div className="sb-brand">
+        <div className="brand-text">
           AEROSKY<br/>
-          <span style={{ fontSize: '0.8rem', letterSpacing: '2px', fontWeight: '400' }}>HOSPITALITY</span>
+          <span>HOSPITALITY</span>
         </div>
       </div>
       
       <div className="sb-admin">
         <div className="sb-admin-dot"></div>
-        <div className="sb-admin-name">{userName} <span style={{ opacity: 0.5, fontSize: '0.6rem' }}>({userRole})</span></div>
+        <div className="sb-admin-name">{userName} <span className="role-tag">({userRole})</span></div>
       </div>
 
       <div className="sb-nav">
@@ -56,70 +47,43 @@ const DashboardLayout = ({ role, userName, userRole, activeTab, onTabChange, chi
             }}
           >
             <span className="sb-icon">{item.icon}</span>
-            <span>{item.label}</span>
+            <span className="sb-label">{item.label}</span>
             {item.badge && <span className="sb-badge-notif">{item.badge}</span>}
           </button>
         ))}
       </div>
 
-      <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border)' }}>
-        <button 
-          className="btn-outline" 
-          style={{ width: '100%', fontSize: '0.7rem' }} 
-          onClick={() => navigate('/login')}
-        >
-          LOGOUT
-        </button>
+      <div className="sb-footer">
+        <button className="btn-outline" onClick={() => navigate('/login')}>LOGOUT</button>
       </div>
-    </>
+    </div>
   );
 
   return (
-    <div className="dashboard-layout">
-      {/* MOBILE HEADER */}
-      <div className="mobile-topbar">
-        <button className="menu-toggle" onClick={toggleMobileMenu}>
-          <div className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`}>
+    <div className={`dashboard-container ${isMobileMenuOpen ? 'menu-open' : ''}`}>
+      {/* MOBILE TOPBAR */}
+      <div className="mobile-header">
+        <button className="menu-btn" onClick={toggleMobileMenu}>
+          <div className={`nav-icon ${isMobileMenuOpen ? 'open' : ''}`}>
             <span></span><span></span><span></span>
           </div>
         </button>
-        <div className="mobile-brand">AEROSKY</div>
-        <div className="mobile-user-dot"></div>
+        <div className="mobile-logo">AEROSKY</div>
+        <div className="mobile-status"></div>
       </div>
 
-      {/* DESKTOP SIDEBAR */}
-      <div className="sidebar desktop-only">
+      {/* SIDEBAR (Responsive) */}
+      <aside className={`dashboard-sidebar ${isMobileMenuOpen ? 'active' : ''}`}>
         <SidebarContent />
-      </div>
+      </aside>
 
-      {/* MOBILE SIDEBAR OVERLAY */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={toggleMobileMenu}
-              className="mobile-overlay"
-            />
-            <motion.div 
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="sidebar mobile-only"
-            >
-              <SidebarContent />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* OVERLAY for Mobile */}
+      {isMobileMenuOpen && <div className="sidebar-overlay" onClick={toggleMobileMenu}></div>}
 
       {/* MAIN CONTENT */}
-      <div className="main">
+      <main className="dashboard-main">
         {children}
-      </div>
+      </main>
     </div>
   );
 };
