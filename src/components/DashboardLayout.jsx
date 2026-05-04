@@ -1,66 +1,78 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardLayout = ({ role, userName, userRole, activeTab, onTabChange, children }) => {
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const isAdmin = role === 'admin';
-  const isClient = role === 'client';
-  const isStaff = role === 'staff';
+  const currentRole = role || 'admin';
+  const isAdmin = currentRole === 'admin';
+  const isClient = currentRole === 'client';
+  const isStaff = currentRole === 'staff';
 
   const navItems = [
-    { id: 'overview', label: 'Home', icon: '◈', show: true },
-    { id: 'events', label: 'Events', icon: '◉', show: isAdmin || isStaff },
-    { id: 'clients', label: 'Clients', icon: '◇', show: isAdmin },
-    { id: 'staff', label: 'Staff', icon: '◎', show: isAdmin || isClient },
-    { id: 'applications', label: 'Apps', icon: '✦', show: isAdmin },
-    { id: 'must', label: 'Musts', icon: '❗', show: isClient },
-    { id: 'payments', label: 'Money', icon: '₹', show: true },
+    { id: 'overview', label: 'Dashboard', icon: '◈', show: true },
+    { id: 'events', label: 'Event Schedule', icon: '◉', show: isAdmin || isStaff },
+    { id: 'clients', label: 'Client Directory', icon: '◇', show: isAdmin },
+    { id: 'staff', label: 'Service Staff', icon: '◎', show: isAdmin || isClient },
+    { id: 'applications', label: 'Applications', icon: '✦', show: isAdmin },
+    { id: 'must', label: 'Non-Negotiables', icon: '❗', show: isClient },
+    { id: 'payments', label: 'Finance & Payouts', icon: '₹', show: true },
   ];
 
+  const handleNavClick = (id) => {
+    onTabChange(id);
+    setIsSidebarOpen(false);
+  };
+
   return (
-    <div className="dashboard-container">
-      {/* DESKTOP SIDEBAR */}
-      <aside className="desktop-sidebar">
-        <div className="sb-brand">
-          <div className="brand-text">AEROSKY<br/><span>HOSPITALITY</span></div>
+    <div className="luxury-dashboard">
+      {/* MOBILE TOP NAV */}
+      <header className="professional-header">
+        <button className="menu-toggle-btn" onClick={() => setIsSidebarOpen(true)}>
+          <div className="menu-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </button>
+        <div className="header-brand">AEROSKY <span className="tab-name">{activeTab}</span></div>
+        <div className="header-user-status"></div>
+      </header>
+
+      {/* SIDEBAR (Desktop & Mobile) */}
+      <aside className={`premium-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-brand">AEROSKY<br/><span>HOSPITALITY</span></div>
+          <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}>✕</button>
         </div>
-        <div className="sb-admin">
-          <div className="sb-admin-name">{userName} <span className="role-tag">({userRole})</span></div>
+        
+        <div className="sidebar-user">
+          <div className="user-info">
+            <span className="u-name">{userName}</span>
+            <span className="u-role">{userRole}</span>
+          </div>
         </div>
-        <div className="sb-nav">
+
+        <nav className="sidebar-nav">
           {navItems.filter(item => item.show).map(item => (
-            <button key={item.id} className={`sb-item ${activeTab === item.id ? 'active' : ''}`} onClick={() => onTabChange(item.id)}>
-              <span className="sb-icon">{item.icon}</span>
-              <span className="sb-label">{item.label}</span>
+            <button key={item.id} className={`nav-link-item ${activeTab === item.id ? 'active' : ''}`} onClick={() => handleNavClick(item.id)}>
+              <span className="link-icon">{item.icon}</span>
+              <span className="link-text">{item.label}</span>
             </button>
           ))}
-        </div>
-        <div className="sb-footer">
-          <button className="btn-outline" onClick={() => navigate('/login')}>LOGOUT</button>
+        </nav>
+
+        <div className="sidebar-footer">
+          <button className="logout-link" onClick={() => navigate('/login')}>Logout Account</button>
         </div>
       </aside>
 
-      {/* MOBILE HEADER */}
-      <header className="mobile-header">
-        <div className="mobile-brand">AEROSKY <span>{activeTab.toUpperCase()}</span></div>
-        <button className="mobile-logout" onClick={() => navigate('/login')}>Logout</button>
-      </header>
+      {/* OVERLAY */}
+      {isSidebarOpen && <div className="sidebar-blur-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
 
-      {/* MAIN CONTENT */}
-      <main className="dashboard-main">
+      {/* MAIN CONTENT AREA */}
+      <main className="main-viewport">
         {children}
       </main>
-
-      {/* MOBILE BOTTOM NAV */}
-      <nav className="mobile-bottom-nav">
-        {navItems.filter(item => item.show).slice(0, 5).map(item => (
-          <button key={item.id} className={`nav-btn ${activeTab === item.id ? 'active' : ''}`} onClick={() => onTabChange(item.id)}>
-            <span className="nav-icon">{item.icon}</span>
-            <span className="nav-label">{item.label}</span>
-          </button>
-        ))}
-      </nav>
     </div>
   );
 };

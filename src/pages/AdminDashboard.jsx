@@ -126,7 +126,17 @@ const AdminDashboard = () => {
   };
 
   if (loading && activeTab === 'overview') {
-    return <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--gold)' }}>Connecting to Cloud Backend...</div>;
+    return (
+      <DashboardLayout role="admin" userName="Admin" userRole="SUPERUSER" activeTab={activeTab} onTabChange={setActiveTab}>
+        <div className="luxury-loader-wrap">
+          <div className="loader-diamond"></div>
+          <div className="loader-text">Waking Up Cloud Server</div>
+          <p style={{ color: 'var(--wd)', fontSize: '0.8rem', textAlign: 'center', maxWidth: '300px' }}>
+            Please allow up to 50 seconds for the secure database to initialize...
+          </p>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   const containerVariants = {
